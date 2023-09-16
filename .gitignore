@@ -1,0 +1,48 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Django settings
+*.secret_key
+*.settings
+*.config
+*.cfg
+
+# Logs
+log/
+logs/
+
+# Media files
+media/
+
+# Database
+db.sqlite3
+*.sqlite3
+
+# Static files
+static/
+
+# Temporary files
+*.swp
+*.swo
+*.swn
+*.bak
+*.backup
+*.tmp
+*.log
+
+# Environment variables
+.env
+
+# IDE specific files
+.idea/
+.vscode/
+
+# Compiled Python files
+*.pyc
+
+# Package management files
+venv/
+env/
+pip-selfcheck.json
