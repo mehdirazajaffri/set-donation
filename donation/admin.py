@@ -19,13 +19,12 @@ class DonorAdmin(admin.ModelAdmin):
         "email_address",
         "phone_number",
         "country",
-        "referred_by",
         "total_donation",
         "total_donation_this_year",
         "total_donation_last_year",
-        "total_donation_time",
+        "donation_counts",
     )
-    list_filter = ("country", "referred_by")
+    list_filter = ("country",)
     search_fields = ("name", "email_address", "phone_number", "country", "remarks")
 
 
@@ -47,7 +46,6 @@ class DonationAdmin(admin.ModelAdmin):
         "fy",
         "receipt_sent",
         "donor__country",
-        "donor__referred_by",
         "on_account",
     )
     search_fields = (
@@ -60,3 +58,4 @@ class DonationAdmin(admin.ModelAdmin):
         "donor__country",
         "remarks",
     )
+    autocomplete_fields = ("donor",)

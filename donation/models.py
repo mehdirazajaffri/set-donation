@@ -23,17 +23,12 @@ class Donor(models.Model):
     remarks = models.TextField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    referred_by = models.ForeignKey(
-        "self",
-        blank=True,
-        null=True,
-        on_delete=models.CASCADE,
-        verbose_name="Referred By",
-    )
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(args, kwargs)
-        self.donations = None
+    def __str__(self):
+        if self.country:
+            return f"{self.name} ({self.country})"
+        else:
+            return self.name
 
     @property
     def total_donation(self):
@@ -41,22 +36,19 @@ class Donor(models.Model):
 
     @property
     def total_donation_this_year(self):
-        return self.donations.filter(fy=2021).aggregate(models.Sum("amount"))[
+        return self.donations.filter(fy=2023).aggregate(models.Sum("amount"))[
             "amount__sum"
         ]
 
     @property
     def total_donation_last_year(self):
-        return self.donations.filter(fy=2020).aggregate(models.Sum("amount"))[
+        return self.donations.filter(fy=2022).aggregate(models.Sum("amount"))[
             "amount__sum"
         ]
 
     @property
-    def total_donation_time(self):
+    def donation_counts(self):
         return self.donations.all().count()
-
-    def __str__(self):
-        return self.name
 
     class Meta:
         verbose_name_plural = "Donors"
