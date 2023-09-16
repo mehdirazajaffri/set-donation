@@ -15,6 +15,53 @@ class TransactionType(models.Model):
         verbose_name_plural = "Transaction Types"
 
 
+class Donor(models.Model):
+    name = models.CharField(max_length=100, blank=False, null=False)
+    email_address = models.EmailField(blank=True, null=True)
+    phone_number = models.CharField(max_length=100, blank=True, null=True)
+    country = models.CharField(max_length=100, blank=False, null=False)
+    remarks = models.TextField(blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    referred_by = models.ForeignKey(
+        "self",
+        blank=True,
+        null=True,
+        on_delete=models.CASCADE,
+        verbose_name="Referred By",
+    )
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(args, kwargs)
+        self.donations = None
+
+    @property
+    def total_donation(self):
+        return self.donations.all().aggregate(models.Sum("amount"))["amount__sum"]
+
+    @property
+    def total_donation_this_year(self):
+        return self.donations.filter(fy=2021).aggregate(models.Sum("amount"))[
+            "amount__sum"
+        ]
+
+    @property
+    def total_donation_last_year(self):
+        return self.donations.filter(fy=2020).aggregate(models.Sum("amount"))[
+            "amount__sum"
+        ]
+
+    @property
+    def total_donation_time(self):
+        return self.donations.all().count()
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        verbose_name_plural = "Donors"
+
+
 class Donation(models.Model):
     date = models.DateField(blank=False, null=False)
     transaction_type = models.ForeignKey(
@@ -35,22 +82,20 @@ class Donation(models.Model):
     on_account = models.CharField(
         max_length=100, blank=False, null=False, verbose_name="On Account"
     )
-    email_address = models.EmailField(
-        blank=True, null=True, verbose_name="Email Address"
+    donor = models.ForeignKey(
+        Donor,
+        blank=True,
+        null=True,
+        on_delete=models.CASCADE,
+        verbose_name="Donor Name",
+        related_name="donations",
     )
-    phone_number = models.CharField(
-        max_length=100, blank=True, null=True, verbose_name="Phone Number"
-    )
-    country = models.CharField(
-        max_length=100, blank=False, null=False, verbose_name="Country"
-    )
-    remarks = models.TextField(blank=True, null=True, verbose_name="Remarks")
     receipt_no = models.CharField(
         max_length=100, blank=True, null=True, verbose_name="Receipt No"
     )
+    receipt_sent = models.BooleanField(default=False, verbose_name="Receipt Sent")
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    receipt_sent = models.BooleanField(default=False, verbose_name="Receipt Sent")
 
     def save(self, *args, **kwargs):
         if self.date.month >= 4:
