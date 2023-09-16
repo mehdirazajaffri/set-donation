@@ -51,7 +51,7 @@ class Donor(models.Model):
         return self.donations.all().count()
 
     class Meta:
-        verbose_name_plural = "Donors"
+        verbose_name_plural = " Donors"
 
 
 class Donation(models.Model):
