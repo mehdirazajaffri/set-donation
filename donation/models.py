@@ -90,10 +90,11 @@ class Donation(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def save(self, *args, **kwargs):
-        if self.date.month >= 4:
-            self.fy = self.date.year
-        else:
-            self.fy = self.date.year - 1
+        if not self.fy:
+            if self.date.month >= 4:
+                self.fy = self.date.year
+            else:
+                self.fy = self.date.year - 1
         super(Donation, self).save(*args, **kwargs)
 
     def __str__(self):
