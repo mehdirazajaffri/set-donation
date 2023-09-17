@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from django.db import models
 
 
@@ -36,15 +38,15 @@ class Donor(models.Model):
 
     @property
     def total_donation_this_year(self):
-        return self.donations.filter(fy=2023).aggregate(models.Sum("amount"))[
-            "amount__sum"
-        ]
+        return self.donations.filter(fy=datetime.now().year + 1).aggregate(
+            models.Sum("amount")
+        )["amount__sum"]
 
     @property
     def total_donation_last_year(self):
-        return self.donations.filter(fy=2022).aggregate(models.Sum("amount"))[
-            "amount__sum"
-        ]
+        return self.donations.filter(fy=datetime.now().year).aggregate(
+            models.Sum("amount")
+        )["amount__sum"]
 
     @property
     def donation_counts(self):
