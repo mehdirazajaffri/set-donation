@@ -41,15 +41,14 @@ class DonationAdmin(admin.ModelAdmin):
     change_list_template = "admin/donation/donations_change_list.html"
 
     list_display = (
+        "from_to",
+        "dated",
         "receipt_no",
+        "donor",
         "transaction_type",
         "fy",
         "amount",
-        "dated",
-        "from_to",
         "on_account",
-        "donor",
-        "receipt_sent",
     )
     list_filter = (
         "transaction_type",
