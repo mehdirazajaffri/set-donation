@@ -87,7 +87,7 @@ class DonationAdmin(admin.ModelAdmin):
                 if not csv_file.name.endswith(".csv"):
                     self.message_user(request, "This is not a csv file")
                     return HttpResponseRedirect("../")
-                io_string = io.StringIO(csv_file.read().decode("utf-8"))
+                io_string = io.StringIO(csv_file.read().decode("utf-8-sig"))
                 reader = csv.DictReader(io_string)
                 for row in reader:
                     donor, _ = Donor.objects.get_or_create(
